@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class FunRestController {
     @Autowired
-//    @Qualifier("trackCoach")
+    @Qualifier("aquatic")
     private Coach myCoach;
 
     @Autowired
