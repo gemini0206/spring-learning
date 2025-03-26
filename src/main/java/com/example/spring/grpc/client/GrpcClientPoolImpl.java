@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class GrpcClientPoolImpl implements IGrpcClientPool {
-    private Map<String, Address> shortcuts = new ConcurrentHashMap<>();
-    private Map<Address, BlockingQueue<ManagedChannel>> pooledChannelMap = new ConcurrentHashMap<>();
+    private final Map<String, Address> shortcuts = new ConcurrentHashMap<>();
+    private final Map<Address, BlockingQueue<ManagedChannel>> pooledChannelMap = new ConcurrentHashMap<>();
 
     private final GrpcServerProperties grpcServerProperties;
 
@@ -68,8 +68,8 @@ public class GrpcClientPoolImpl implements IGrpcClientPool {
 
     @Override
     public void clearPooledObject(String shortcut) {
-        BlockingQueue<ManagedChannel> managedChannels = pooledChannelMap.get(shortcut);
-        if (managedChannels != null && managedChannels.size() > 0) {
+        BlockingQueue<ManagedChannel> managedChannels = pooledChannelMap.get(shortcuts.get(shortcut));
+        if (managedChannels != null && !managedChannels.isEmpty()) {
             Address address = addressOf(shortcut);
             log.info("[INFO] clear pooled object for shortcut {} on {}:{}", shortcut, address.getHost(), address.getPort());
             managedChannels.forEach(channel -> {
@@ -77,7 +77,7 @@ public class GrpcClientPoolImpl implements IGrpcClientPool {
                 terminateChannel(channel, address);
             });
             managedChannels.clear();
-            pooledChannelMap.remove(shortcut);
+            pooledChannelMap.remove(shortcuts.get(shortcut));
         }
     }
 
@@ -112,7 +112,7 @@ public class GrpcClientPoolImpl implements IGrpcClientPool {
         return result;
     }
 
-    private ManagedChannel createChannel(String host, int port) throws Exception {
+    private ManagedChannel createChannel(String host, int port) {
         int clientWorkerCount = grpcServerProperties == null ? 10 : grpcServerProperties.getClientWorkerCount();
         log.info("[DEBUG]create channel for {}:{}'s client worker count is {}", host, port, clientWorkerCount);
         ManagedChannelBuilder<?> builder = ManagedChannelBuilder.forAddress(host, port);
@@ -126,13 +126,13 @@ public class GrpcClientPoolImpl implements IGrpcClientPool {
                 if (!channel.shutdown().awaitTermination(3000, TimeUnit.MILLISECONDS)) {
                     channel.shutdownNow().awaitTermination(3000, TimeUnit.MILLISECONDS);
                     if (address == null) {
-                        log.warn("Force shutdown UNPOOLED channel: {}, result is {}.", channel.toString(), channel.isTerminated());
+                        log.warn("Force shutdown UNPOOLED channel: {}, result is {}.", channel, channel.isTerminated());
                     } else {
                         log.warn("Force shutdown POOLED channel: {}:{}, result is {}.", address.host, address.port, channel.isTerminated());
                     }
                 }
-            } catch (Exception ignore) {
-                log.warn("Destroy channel occured error ", ignore);
+            } catch (Exception e) {
+                log.warn("Destroy channel occured error ", e);
             }
         }
 
