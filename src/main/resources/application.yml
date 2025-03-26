@@ -1,0 +1,42 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,mappings
+      base-path: /act
+  info:
+    env:
+      enabled: 'true'
+info:
+  app:
+    name: My Super Cool App
+    version: 1.0.0
+    description: A crazy and fun app, yoohoo!
+spring:
+  application:
+    name: spring
+  main:
+    banner-mode: 'off'
+  datasource:
+    password: springstudent
+    username: springstudent
+    url: jdbc:mysql://localhost:3306/student_tracker
+  jpa:
+    hibernate:
+      ddl-auto: update
+team:
+  name: The Mouse Crew
+server:
+  port: '8080'
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: ./logs/
+    basedir: ./
+coach:
+  name: Mickey Mouse
+
+grpc:
+  port: 8081
+  server-worker-count: 200
+  client-worker-count: 200
