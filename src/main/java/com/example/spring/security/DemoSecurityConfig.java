@@ -23,12 +23,12 @@ public class DemoSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(configure ->
-                configure.requestMatchers(HttpMethod.GET, "/api/students").hasRole("EMPLOYEE")
-                        .requestMatchers(HttpMethod.GET, "/api/students/**").hasRole("MANAGER")
-        );
+//        http.authorizeHttpRequests(configure ->
+//                configure.requestMatchers(HttpMethod.GET, "/api/students").hasRole("EMPLOYEE")
+//                        .requestMatchers(HttpMethod.GET, "/api/students/**").hasRole("MANAGER")
+//        );
 
-        http.httpBasic(Customizer.withDefaults());
+//        http.httpBasic(Customizer.withDefaults());
 
         http.csrf(AbstractHttpConfigurer::disable);
 

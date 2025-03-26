@@ -1,5 +1,6 @@
 package com.example.spring.grpc.server;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author essen
  */
-@Getter
-@Setter
+@Data
 @Configuration
 @ConfigurationProperties(prefix = "grpc")
 public class GrpcServerProperties {
@@ -40,6 +40,8 @@ public class GrpcServerProperties {
     private boolean statsEnable = false;
 
     private int serverWorkerCount = 10;
+
+    private int clientWorkerCount = 10;
 
     /**
      * In process server name.

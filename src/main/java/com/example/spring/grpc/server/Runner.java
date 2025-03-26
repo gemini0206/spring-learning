@@ -1,6 +1,7 @@
 package com.example.spring.grpc.server;
 
 import io.grpc.BindableService;
+import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.health.v1.HealthCheckResponse;
@@ -8,8 +9,10 @@ import io.grpc.services.HealthStatusManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.parameters.P;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -22,13 +25,21 @@ public class Runner {
 
     private final HealthStatusManager healthStatusManager;
 
+    private Server server;
+
     public Runner(ApplicationContext applicationContext, ServerBuilder<?> serverBuilder, HealthStatusManager healthStatusManager) {
         this.applicationContext = applicationContext;
         this.serverBuilder = serverBuilder;
         this.healthStatusManager = healthStatusManager;
+        try {
+            startup();
+        } catch (Exception e) {
+            log.error("Create new gRpc Server fail! cause is:{}", e);
+        }
+
     }
 
-    private void startup() {
+    private void startup() throws IOException {
         Runner runner = this;
         log.info("Starting gRPC Server ...");
         serverBuilder.addService(healthStatusManager.getHealthService());
@@ -36,17 +47,6 @@ public class Runner {
         getBeanNames(GrpcService.class, BindableService.class)
                 .forEach(name -> {
                     BindableService srv = applicationContext.getBean(name, BindableService.class);
-                    GrpcService grpcService = applicationContext.findAnnotationOnBean(name, GrpcService.class);
-//                    ServerServiceDefinition serviceDefinition = GrpcServerRunner.this.bindInterceptors(
-//                            srv.bindService(),
-//                            grpcService,
-//                            getServerInterceptors()
-//                    );
-
-                    //todo: inject jaeger tracer
-                    //ServerTracingInterceptor tracingInterceptor = new ServerTracingInterceptor(TraceProvider.jaegerTracer(name));
-                    //serverBuilder.addService(tracingInterceptor.intercept(serviceDefinition));
-
                     serverBuilder.addService(srv.bindService());
                     healthStatusManager.setStatus(
                             srv.bindService().getServiceDescriptor().getName(),
@@ -55,6 +55,7 @@ public class Runner {
 
                     log.info("'{}' service has been registered.", srv.getClass().getName());
                 });
+        server = serverBuilder.build().start();
     }
 
     private <T> Stream<String> getBeanNames(Class<? extends Annotation> annotationType, Class<T> beanType) {

@@ -2,6 +2,8 @@ package com.example.spring;
 
 import com.example.spring.dao.StudentDAO;
 import com.example.spring.entity.Student;
+import com.example.spring.grpc.client.GrpcClientConfig;
+import com.example.spring.grpc.client.GrpcClientProperties;
 import com.example.spring.grpc.server.GrpcServerProperties;
 import com.example.spring.grpc.server.Runner;
 import io.grpc.inprocess.InProcessServerBuilder;
@@ -24,7 +26,6 @@ import java.util.List;
 		"com.example.spring",
 		"com.example.util" 
 })
-@EnableConfigurationProperties(GrpcServerProperties.class)
 public class Application {
 
 	public static void main(String[] args) {
@@ -47,6 +48,16 @@ public class Application {
 	@Bean
 	public HealthStatusManager healthStatusManager() {
 		return new HealthStatusManager();
+	}
+
+	@Bean
+	public GrpcClientProperties grpcClientProperties() {
+		return new GrpcClientProperties();
+	}
+
+	@Bean
+	public GrpcClientConfig grpcClientConfig() {
+		return new GrpcClientConfig();
 	}
 
 	private void deleteAllStudent(StudentDAO studentDAO) {

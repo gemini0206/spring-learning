@@ -40,3 +40,11 @@ grpc:
   port: 8081
   server-worker-count: 200
   client-worker-count: 200
+
+grpc-client:
+  stub-deadline: 5500
+  short-stub-deadline: 2000
+  channel-info:
+    - channel-name: 'server'
+      host: 'localhost'
+      port: 8081
