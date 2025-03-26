@@ -17,6 +17,10 @@ public interface IGrpcClientPool {
 
     public void setShortcut(String key, String host, int port) throws NullPointerException;
 
+    public Address addressOf(String shortcut);
+
+    public void clearPooledObject(String shortcut);
+
     public Set<String> shortcuts();
 
     @Builder
