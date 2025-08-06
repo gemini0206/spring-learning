@@ -74,6 +74,7 @@ public class Application {
 	}
 
 	private void updateStudent(StudentDAO studentDAO) {
+		System.out.println("Start update student");
 		int studentId = 1;
 		System.out.println("Getting student with id " + studentId);
 
