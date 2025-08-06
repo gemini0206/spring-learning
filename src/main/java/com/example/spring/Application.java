@@ -61,30 +61,20 @@ public class Application {
 	}
 
 	private void deleteAllStudent(StudentDAO studentDAO) {
-		System.out.println("Deleting all students");
 		int numRowsDeleted = studentDAO.deleteAll();
-		System.out.println("Deleted " + numRowsDeleted + " students");
 	}
 
 	private void deleteStudent(StudentDAO studentDAO) {
 		int studentId = 2;
-		System.out.println("Deleting student id: " + studentId);
 		studentDAO.delete(studentId);
-		System.out.println("Deleted student: " + studentId);
 	}
 
 	private void updateStudent(StudentDAO studentDAO) {
 		System.out.println("Start update student");
 		int studentId = 1;
-		System.out.println("Getting student with id " + studentId);
-
-
-		System.out.println("Updating student...");
 		Student theStudent = studentDAO.findById(studentId);
 		theStudent.setFirstName("Scooby");
 		studentDAO.update(theStudent);
-
-		System.out.println("Updated student");
 	}
 
 	private void queryForStudentsByLastName(StudentDAO studentDAO) {
@@ -104,27 +94,15 @@ public class Application {
 	}
 
 	private void readStudent(StudentDAO studentDAO) {
-		System.out.println("Creating student...");
 		Student tempStudent = new Student("Daffy", "Duck", "daffy@luv2code.com");
-
-		System.out.println("Saving student...");
 		studentDAO.save(tempStudent);
-
 		int theId = tempStudent.getId();
-		System.out.println("Done. Generated id: " + theId);
-
 		Student theStudent = studentDAO.findById(theId);
-		System.out.println("Found student: " + theStudent);
 	}
 
 	private void createStudent(StudentDAO studentDAO) {
-		System.out.println("Creating student...");
 		Student tempStudent = new Student("Paul", "Doe", "paul@luv2code.com");
-
-		System.out.println("Saving student...");
 		studentDAO.save(tempStudent);
-
-		System.out.println("Done. Generated id: " + tempStudent.getId());
 	}
 
 
