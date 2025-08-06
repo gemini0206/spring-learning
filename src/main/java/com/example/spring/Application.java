@@ -35,8 +35,7 @@ public class Application {
 	@Bean
 	public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
 		return runner -> {
-			abc
-//			createStudent(studentDAO);
+			createStudent(studentDAO);
 //			readStudent(studentDAO);
 //			queryForStudents(studentDAO);
 //			queryForStudentsByLastName(studentDAO);
