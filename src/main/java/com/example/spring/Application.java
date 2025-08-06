@@ -35,7 +35,7 @@ public class Application {
 	@Bean
 	public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
 		return runner -> {
-			createStudent(studentDAO);
+//			createStudent(studentDAO);
 //			readStudent(studentDAO);
 //			queryForStudents(studentDAO);
 //			queryForStudentsByLastName(studentDAO);
@@ -74,6 +74,7 @@ public class Application {
 	}
 
 	private void updateStudent(StudentDAO studentDAO) {
+		System.out.println("Start update student");
 		int studentId = 1;
 		System.out.println("Getting student with id " + studentId);
 
